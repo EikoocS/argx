@@ -172,65 +172,37 @@ namespace argx {
         string_list _flags;
     };
 
-    class ParseResultBuilder {
-    public:
-        ParseResultBuilder()= default;
-        void arg(const std::string& arg) {
-            args.push_back(arg);
-        }
-        void option(const std::string& key, const std::string& value) {
-            if(options.contains(key)) {
-                options[key].push_back(value);
-            }else {
-                options[key] = {value};
-            }
-        }
-        void option(const std::string& key) {
-            if (!options.contains(key)) {
-                options[key] = {};
-            }
-        }
-        void flag(const std::string& flag) {
-            flags.push_back(flag);
-        }
-        [[nodiscard]]
-        ParseResult build() const {
-            return {args, options, flags};
-        }
-    private:
-        string_list args = {};
+    inline ParseResult parse(const int argc, char **argv) {
+        string_list arguments = {};
         options_map options = {};
         string_list flags = {};
-    };
 
-    inline ParseResult parse(const int argc, char **argv) {
-        auto builder = ParseResultBuilder();
         std::optional<std::string> previous = std::nullopt;
-        for (int i = 1; i < argc; i++) {
-            std::string arg = argv[i];
-            if (arg[0] == '-' && arg[1] == '-') { // Flag
-                if (previous.has_value()) {
-                    builder.option(previous.value());
-                    previous = std::nullopt;
-                }
-                builder.flag(arg.substr(2));
-            } else if (arg[0] == '-') { // Option
-                if (previous.has_value()) {
-                    builder.option(previous.value());
-                }
-                previous = arg.substr(1);
+
+        for (int i = 0; i < argc; i++) {
+            std::string target = argv[i];
+
+            const size_t prefix = target.find_first_not_of('-');
+            if (prefix == target.length()) continue;
+            target.erase(0, prefix);
+
+            if (prefix>=2) { // Flag
+                previous = std::nullopt;
+                flags.push_back(target);
+            } else if (prefix==1) { // Option
+                if (!options.contains(target))
+                    options[target] = {};
+                previous = target;
             } else { // Argument
                 if (previous.has_value()) {
-                    builder.option(previous.value(),arg);
+                    options[previous.value()].push_back(target);
                     previous = std::nullopt;
                 }else {
-                    builder.arg(arg);
+                    arguments.push_back(target);
                 }
             }
         }
-        if (previous.has_value()) {
-            builder.option(previous.value());
-        }
-        return builder.build();
+
+        return {arguments, options, flags};
     }
 }
