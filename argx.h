@@ -33,14 +33,14 @@ namespace argx {
          * Get the size of arguments
          * @return size of arguments
          */
-        [[nodiscard]] size_t argSize() const { return _args.size(); }
+        [[nodiscard]] size_t arg_size() const { return _args.size(); }
         /**
          * Get the argument at the index or return the default value
          * @param index : index of the argument
          * @param def : default value
          * @return argument at the index or default value
          */
-        [[nodiscard]] std::string argOrDef(const int index, const std::string& def) {
+        [[nodiscard]] std::string arg_or_def(const int index, const std::string& def) {
             if ( index >= _args.size() ) return def;
             auto it = _args.begin();
             std::advance(it, index);
@@ -68,14 +68,14 @@ namespace argx {
          * Get the size of options
          * @return size of options
          */
-        [[nodiscard]] size_t optionSize() const { return _opts.size(); }
+        [[nodiscard]] size_t option_size() const { return _opts.size(); }
         /**
          * Get the option value of the key or return the default value
          * @param key : key of the option
          * @param def : default value
          * @return option value of the key or default value
          */
-        [[nodiscard]] std::string optionOrDef(const std::string& key, const std::string& def) {
+        [[nodiscard]] std::string option_or_def(const std::string& key, const std::string& def) {
             if(_opts.contains(key)) {
                 return _opts[key].front();
             }
@@ -96,7 +96,7 @@ namespace argx {
          * @param def : default value
          * @return option value of the key or default value
          */
-        [[nodiscard]] std::string optionOrDef(const string_il keys, const std::string& def) {
+        [[nodiscard]] std::string option_or_def(const string_il keys, const std::string& def) {
             for(const auto& key : keys) {
                 if(_opts.contains(key)) {
                     return _opts[key].front();
@@ -152,7 +152,7 @@ namespace argx {
          * Get the size of flags
          * @return size of flags
          */
-        [[nodiscard]] size_t flagSize() const { return _flags.size(); }
+        [[nodiscard]] size_t flag_size() const { return _flags.size(); }
         /**
          * Check if the flag exists
          * @param flag : flag to check

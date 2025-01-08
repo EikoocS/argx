@@ -6,8 +6,8 @@ using namespace std;
 
 int main( int argc, char** argv ) {
     auto result = argx::parse(argc, argv);
-    cout << "Arguments: " << result.argSize() << endl;
-    for (int i=0;i<result.argSize();i++) {
+    cout << "Arguments: " << result.arg_size() << endl;
+    for (int i=0;i<result.arg_size();i++) {
         cout << "   [" << i << "] : " << result.argument(i) << endl;
     }
     cout << "Options: " << result.options().size() << endl;
